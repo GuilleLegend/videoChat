@@ -22,15 +22,18 @@ import { HttpService } from '../modules/shared/services/http.service';
   styleUrls: ['./call.page.scss'],
 })
 export class CallPage implements OnInit, AfterViewInit, OnDestroy {
+
   @ViewChild('userVideo', { read: ElementRef }) userVideoEl: ElementRef;
   @ViewChild('guestVideo', { read: ElementRef }) guestVideoEl: ElementRef;
   @ViewChild('callInvite', { read: ElementRef }) callInviteEl: ElementRef;
   @ViewChild('callUrlInvite', { read: ElementRef }) callUrlInviteEl: ElementRef;
+
   private pc: RTCPeerConnection;
   private servers;
   private localStream: MediaStream;
   private remoteStream: MediaStream;
   private firestore = firebase.firestore();
+
   isMuted: boolean = true;
   isBlinded: boolean = true;
   callInviteId: string;
@@ -70,16 +73,17 @@ export class CallPage implements OnInit, AfterViewInit, OnDestroy {
 
   private async initLocalStream(): Promise<void> {
     console.log('Init Local Stream');
-    this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true }); //Require WebCam Connected
     this.remoteStream = new MediaStream();
-    console.log('Init Local Stream 2');
+    
+    
     // Push tracks from local stream to peer connection
     this.localStream.getTracks().forEach((track) => {
       this.pc.addTrack(track, this.localStream);
     });
     (this.userVideoEl.nativeElement as HTMLVideoElement).srcObject = this.localStream;
     (this.userVideoEl.nativeElement as HTMLVideoElement).classList.add('video-inverter');
-    console.log('Init Local Stream 3');
+    
     // Pull tracks from remote stream, add to video stream
     this.pc.ontrack = (event) => {
       event.streams[0].getTracks().forEach((track) => {
@@ -88,7 +92,7 @@ export class CallPage implements OnInit, AfterViewInit, OnDestroy {
     };
     (this.guestVideoEl.nativeElement as HTMLVideoElement).srcObject = this.remoteStream;
     (this.guestVideoEl.nativeElement as HTMLVideoElement).classList.add('video-inverter');
-    console.log('Init Local Stream 4');
+    
     this.pc.oniceconnectionstatechange = async (event) => {
       if(this.pc.iceConnectionState === 'disconnected') {
         setTimeout(() => {
