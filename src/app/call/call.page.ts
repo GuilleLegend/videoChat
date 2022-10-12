@@ -15,6 +15,7 @@ import 'firebase/firestore';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpService } from '../modules/shared/services/http.service';
 
+
 @Component({
   selector: 'app-call',
   templateUrl: './call.page.html',
@@ -68,16 +69,17 @@ export class CallPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private async initLocalStream(): Promise<void> {
+    console.log('Init Local Stream');
     this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
     this.remoteStream = new MediaStream();
-
+    console.log('Init Local Stream 2');
     // Push tracks from local stream to peer connection
     this.localStream.getTracks().forEach((track) => {
       this.pc.addTrack(track, this.localStream);
     });
     (this.userVideoEl.nativeElement as HTMLVideoElement).srcObject = this.localStream;
     (this.userVideoEl.nativeElement as HTMLVideoElement).classList.add('video-inverter');
-
+    console.log('Init Local Stream 3');
     // Pull tracks from remote stream, add to video stream
     this.pc.ontrack = (event) => {
       event.streams[0].getTracks().forEach((track) => {
@@ -86,7 +88,7 @@ export class CallPage implements OnInit, AfterViewInit, OnDestroy {
     };
     (this.guestVideoEl.nativeElement as HTMLVideoElement).srcObject = this.remoteStream;
     (this.guestVideoEl.nativeElement as HTMLVideoElement).classList.add('video-inverter');
-
+    console.log('Init Local Stream 4');
     this.pc.oniceconnectionstatechange = async (event) => {
       if(this.pc.iceConnectionState === 'disconnected') {
         setTimeout(() => {
@@ -97,7 +99,7 @@ export class CallPage implements OnInit, AfterViewInit, OnDestroy {
           }, 5000);
       }
       if (this.pc.iceConnectionState === 'connected') { 
-        // await this.initLocalStream();
+        await this.initLocalStream();
       }
       console.log({ connectionStatus: this.pc.iceConnectionState  });
     }
@@ -105,6 +107,7 @@ export class CallPage implements OnInit, AfterViewInit, OnDestroy {
 
   private async initCallSession(): Promise<void> {
     // Get call doc id from firestore
+    console.log('Init Call Session');
     const callDoc = this.firestore.collection('calls').doc();
     const offerCandidates = callDoc.collection('offerCandidates');
     const answerCandidates = callDoc.collection('answerCandidates');
@@ -150,6 +153,8 @@ export class CallPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private async initAnswerSession(callId: string): Promise<void> {
+
+    console.log('Init Answer Session');
     this.callInviteId = callId;
     const callDoc = this.firestore.collection('calls').doc(callId);
     const answerCandidates = callDoc.collection('answerCandidates');

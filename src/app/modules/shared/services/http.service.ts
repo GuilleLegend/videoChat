@@ -13,11 +13,12 @@ export class HttpService {
 
   constructor(private readonly firestore: AngularFirestore) { 
     this.callDoc$ = firestore.collection('calls').valueChanges();
-    // this.offerCandidationDoc$ = firestore.collection('offerCandidates').valueChanges();
-    // this.answerCandidateDoc$  =firestore.collection('answerCandidates').valueChanges();
+    this.offerCandidationDoc$ = firestore.collection('offerCandidates').valueChanges();
+    this.answerCandidateDoc$  =firestore.collection('answerCandidates').valueChanges();
   }
 
   async createCall<T>(payload: T): Promise<string> {
+    console.log('Creating Call');
     const responseData: any =
         await this.firestore
           .collection(this.collectionName)
