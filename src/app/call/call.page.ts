@@ -47,6 +47,7 @@ export class CallPage implements OnInit, AfterViewInit, OnDestroy {
           urls: [
             'stun:stun1.l.google.com:19302', 
             'stun:stun2.l.google.com:19302'
+            //Look for better and more stable ones
           ],
         },
       ],
