@@ -1,12 +1,4 @@
-import { 
-  Component,
-  OnInit, 
-  AfterViewInit, 
-  ElementRef, 
-  ViewChild, 
-  OnDestroy,
-  NgZone,
-} from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef, ViewChild, OnDestroy, NgZone,} from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { Clipboard } from '@capacitor/clipboard';
 import { AngularFirestore } from '@angular/fire/firestore';
